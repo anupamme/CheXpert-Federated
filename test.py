@@ -56,6 +56,8 @@ def main():
         print("** use last weights **")
         model_weights_path = weights_path
     model_factory = ModelFactory()
+    import pdb
+    pdb.set_trace()
     model = model_factory.get_model(
         class_names,
         model_name=base_model_name,
@@ -81,8 +83,6 @@ def main():
     test_log_path = os.path.join(output_dir, "test.log")
     print("** write log to {test_log_path} **")
     aurocs = []
-    import pdb
-    pdb.set_trace()
     with open(test_log_path, "w") as f:
         for i in range(len(class_names)):
             try:
