@@ -9,7 +9,7 @@ from utility import get_sample_counts
 
 def main():
     # parser config
-    config_file = "./config.ini"
+    config_file = "./sample_config.ini"
     cp = ConfigParser()
     cp.read(config_file)
 
@@ -81,6 +81,8 @@ def main():
     test_log_path = os.path.join(output_dir, "test.log")
     print("** write log to {test_log_path} **")
     aurocs = []
+    import pdb
+    pdb.set_trace()
     with open(test_log_path, "w") as f:
         for i in range(len(class_names)):
             try:
@@ -88,7 +90,8 @@ def main():
                 aurocs.append(score)
             except ValueError:
                 score = 0
-            f.write("{class_names[i]}: {score}\n")
+            f.write(str(class_names[i]) + ": " + str(score) + "\n")
+            #f.write("{class_names[i]}: {score}\n")
         mean_auroc = np.mean(aurocs)
         f.write("-------------------------\n")
         f.write("mean auroc: {mean_auroc}\n")

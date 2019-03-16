@@ -22,7 +22,7 @@ class ModelFactory:
                 last_conv_layer="block5_conv4",
             ),
             DenseNet121=dict(
-                input_shape=(224, 224, 3),
+                input_shape=(320, 320, 3),
                 module_name="densenet",
                 last_conv_layer="bn",
             ),
