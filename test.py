@@ -190,4 +190,5 @@ def predict_all(_test_file="test"):
 
 
 if __name__ == "__main__":
+    args = parser.parse_args()
     predict_all(args.file)
