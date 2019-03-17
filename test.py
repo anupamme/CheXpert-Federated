@@ -159,8 +159,8 @@ def predict_all(_test_file="test"):
     for idx, item in enumerate(y_hat):  # cases
         case_str = 'case id - ' + str(idx)
         output_str = ''
-        for idx, score_item in enumerate(item): # classes
-            output_str += str(class_names[i]) + ": " + str(score_item)
+        for idx_score, score_item in enumerate(item): # classes
+            output_str += str(class_names[idx_score]) + ": " + str(score_item)
         f.write(case_str + ': ' + output_str + '\n')
     f.close()
     
