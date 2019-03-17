@@ -6,6 +6,10 @@ from models.keras import ModelFactory
 from sklearn.metrics import roc_auc_score
 from utility import get_sample_counts
 
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("file", type=str)
+
 # parser config
 config_file = "./sample_config.ini"
 cp = ConfigParser()
@@ -186,4 +190,4 @@ def predict_all(_test_file="test"):
 
 
 if __name__ == "__main__":
-    main()
+    predict_all(args.file)
