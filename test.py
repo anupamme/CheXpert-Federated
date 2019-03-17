@@ -52,6 +52,7 @@ def main():
     test_counts, _ = get_sample_counts(output_dir, "test", class_names)
 
     # compute steps
+    global test_steps
     if test_steps == "auto":
         test_steps = int(test_counts / batch_size)
     else:
@@ -124,6 +125,7 @@ def predict_all(image_folder):
     test_counts, _ = get_sample_counts(output_dir, _test_file, class_names)
 
     # compute steps
+    global test_steps
     if test_steps == "auto":
         test_steps = int(test_counts / batch_size)
     else:
