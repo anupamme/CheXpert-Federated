@@ -119,9 +119,8 @@ def predict_single(image_location):
 1. Predicts probability/binary vector for all images in the folder
 2. Outputs accuracy in the file
 '''
-def predict_all(image_folder):
+def predict_all(_test_file="test"):
     # get test sample count
-    _test_file = "test_mj"
     test_counts, _ = get_sample_counts(output_dir, _test_file, class_names)
 
     # compute steps
