@@ -124,7 +124,7 @@ def predict_single(image_location):
 1. create csv for this image_folder
 
 '''
-def predict_all(image_folder, _test_file='test'):
+def predict_all(image_folder, _test_file='test', calculate_accuracy=False):
     csv_file_name = _test_file + '.csv'
     csv_file_path = os.path.join(output_dir, csv_file_name)
     create_csv(image_folder, csv_file_path)
@@ -172,26 +172,22 @@ def predict_all(image_folder, _test_file='test'):
         f.write(case_str + ': ' + output_str + '\n')
     f.close()
     
-    
-    test_log_path = os.path.join(output_dir, _test_file + ".log")
-    print("** write log to {test_log_path} **")
-    aurocs = []
-    with open(test_log_path, "w") as f:
-        for i in range(len(class_names)):
-            try:
-                score = roc_auc_score(y[:, i], y_hat[:, i])
-                aurocs.append(score)
-            except ValueError:
-                score = 0
-            f.write(str(class_names[i]) + ": " + str(score) + "\n")
-        mean_auroc = np.mean(aurocs)
-        f.write("-------------------------\n")
-        f.write("mean auroc: {mean_auroc}\n")
-        print("mean auroc: {mean_auroc}")
-    pass
-
-
-
+    if calculate_accuracy:
+        test_log_path = os.path.join(output_dir, _test_file + ".log")
+        print("** write log to {test_log_path} **")
+        aurocs = []
+        with open(test_log_path, "w") as f:
+            for i in range(len(class_names)):
+                try:
+                    score = roc_auc_score(y[:, i], y_hat[:, i])
+                    aurocs.append(score)
+                except ValueError:
+                    score = 0
+                f.write(str(class_names[i]) + ": " + str(score) + "\n")
+            mean_auroc = np.mean(aurocs)
+            f.write("-------------------------\n")
+            f.write("mean auroc: {mean_auroc}\n")
+            print("mean auroc: {mean_auroc}")
 
 if __name__ == "__main__":
     args = parser.parse_args()
