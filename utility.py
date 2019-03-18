@@ -29,7 +29,7 @@ def get_sample_counts(output_dir, dataset, class_names):
 2. write in format:
     folder_name/filename.jpg,_,_,_,_,-1,-1,-1,-1 (14 times)
 '''
-def create_csv(image_source_dir, image_folder, csv_file_path)
+def create_csv(image_source_dir, image_folder, csv_file_path):
     _header = 'Path,Sex,Age,Frontal/Lateral,AP/PA,No_Finding,Enlarged_Cardiomediastinum,Cardiomegaly,Lung_Opacity,Lung_Lesion,Edema,Consolidation,Pneumonia,Atelectasis,Pneumothorax,Pleural_Effusion,Pleural_Other,Fracture,Support_Devices'
     f = open(file_name, 'w')
     f.write(_header + '\n')
