@@ -1,9 +1,12 @@
 import numpy as np
 import os
+import math
+
 from configparser import ConfigParser
 from generator import AugmentedImageSequence
 from models.keras import ModelFactory
 from sklearn.metrics import roc_auc_score
+
 from utility import get_sample_counts
 from utility import create_csv
 
@@ -135,7 +138,7 @@ def predict_all(image_folder, _test_file='test', calculate_accuracy=False):
     # compute steps
     global test_steps
     if test_steps == "auto":
-        test_steps = int(test_counts / batch_size)
+        test_steps = math.ceil(test_counts / batch_size)
     else:
         try:
             test_steps = int(test_steps)
