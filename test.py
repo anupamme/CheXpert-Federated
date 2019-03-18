@@ -130,8 +130,7 @@ def predict_single(image_location):
 def predict_all(image_folder, _test_file='test', calculate_accuracy=False):
     csv_file_name = _test_file + '.csv'
     csv_file_path = os.path.join(output_dir, csv_file_name)
-    image_folder_path = os.path.join(image_source_dir, image_folder)
-    create_csv(image_folder_path, csv_file_path)
+    create_csv(image_source_dir, image_folder, csv_file_path)
     # get test sample count
     test_counts, _ = get_sample_counts(output_dir, _test_file, class_names)
 
