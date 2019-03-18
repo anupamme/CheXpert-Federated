@@ -130,7 +130,7 @@ def predict_single(image_location):
 def predict_all(image_folder, _test_file='test', calculate_accuracy=False):
     csv_file_name = _test_file + '.csv'
     csv_file_path = os.path.join(output_dir, csv_file_name)
-    create_csv(image_source_dir, image_folder, csv_file_path)
+    images_list = create_csv(image_source_dir, image_folder, csv_file_path)
     # get test sample count
     test_counts, _ = get_sample_counts(output_dir, _test_file, class_names)
 
@@ -167,12 +167,14 @@ def predict_all(image_folder, _test_file='test', calculate_accuracy=False):
     print("** print predictions **")
     test_log_path = os.path.join(output_dir, _test_file + ".pred")
     f = open(test_log_path, 'w')
+    _header = 'image_path' + ','.join(class_names)
+    f.write(_header)
     for idx, item in enumerate(y_hat):  # cases
-        case_str = 'case id - ' + str(idx)
+        image_name = images_list[idx]
         output_str = ''
         for idx_score, score_item in enumerate(item): # classes
             output_str += str(class_names[idx_score]) + ": " + str(score_item)
-        f.write(case_str + ': ' + output_str + '\n')
+        f.write(image_name + ', ' + output_str + '\n')
     f.close()
     
     if calculate_accuracy:

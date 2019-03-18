@@ -34,9 +34,12 @@ def create_csv(image_source_dir, image_folder, csv_file_path):
     f = open(csv_file_path, 'w')
     f.write(_header + '\n')
     _path = os.path.join(image_source_dir, image_folder, "*.jpg")
+    output = []
     for item in glob(_path):
         _start_index = len(image_source_dir) + 2 
         local_path = os.path.join(image_folder, item[item.rindex('/')+1:])
+        output.append(local_path)
         _line = local_path + ',_,_,_,_,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1'
         f.write(_line + '\n')
     f.close()
+    output
