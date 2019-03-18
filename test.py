@@ -177,8 +177,8 @@ def predict_all(image_folder, _test_file='test', calculate_accuracy=False):
         output_str = ''
         output_class = ''
         for idx_score, score_item in enumerate(item): # classes
-            output_str += str(score_item)
-            output_class += str(round(score_item))
+            output_str += str(score_item) + ', '
+            output_class += str(int(round(score_item))) + ', '
         f.write(image_name + ', ' + output_str + '\n')
         f2.write(image_name + ', ' + output_class + '\n')
     f.close()
