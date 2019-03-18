@@ -167,13 +167,13 @@ def predict_all(image_folder, _test_file='test', calculate_accuracy=False):
     print("** print predictions **")
     test_log_path = os.path.join(output_dir, _test_file + ".pred")
     f = open(test_log_path, 'w')
-    _header = 'image_path' + ','.join(class_names)
+    _header = 'image_path, ' + ', '.join(class_names)
     f.write(_header + '\n')
     for idx, item in enumerate(y_hat):  # cases
         image_name = images_list[idx]
         output_str = ''
         for idx_score, score_item in enumerate(item): # classes
-            output_str += str(class_names[idx_score]) + ": " + str(score_item)
+            output_str += str(score_item)
         f.write(image_name + ', ' + output_str + '\n')
     f.close()
     
