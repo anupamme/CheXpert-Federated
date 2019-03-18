@@ -33,8 +33,8 @@ def create_csv(image_folder, file_name):
     _header = 'Path,Sex,Age,Frontal/Lateral,AP/PA,No_Finding,Enlarged_Cardiomediastinum,Cardiomegaly,Lung_Opacity,Lung_Lesion,Edema,Consolidation,Pneumonia,Atelectasis,Pneumothorax,Pleural_Effusion,Pleural_Other,Fracture,Support_Devices'
     f = open(file_name, 'w')
     f.write(_header + '\n')
-    for item in glob("*.jpg"):
-        _path = os.path.join(image_folder, item)
-        _line = _path + ',_,_,_,_,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1'
+    _path = os.path.join(image_folder, "*.jpg")
+    for item in glob(_path):
+        _line = item + ',_,_,_,_,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1'
         f.write(_line + '\n')
     f.close()
