@@ -31,7 +31,7 @@ def get_sample_counts(output_dir, dataset, class_names):
 '''
 def create_csv(image_folder, file_name):
     _header = 'Path,Sex,Age,Frontal/Lateral,AP/PA,No_Finding,Enlarged_Cardiomediastinum,Cardiomegaly,Lung_Opacity,Lung_Lesion,Edema,Consolidation,Pneumonia,Atelectasis,Pneumothorax,Pleural_Effusion,Pleural_Other,Fracture,Support_Devices'
-    f = open(filename, 'w')
+    f = open(file_name, 'w')
     f.write(_header + '\n')
     for item in glob("*.jpg"):
         _path = os.path.join(image_folder, item)
