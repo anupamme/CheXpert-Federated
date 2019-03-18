@@ -42,4 +42,4 @@ def create_csv(image_source_dir, image_folder, csv_file_path):
         _line = local_path + ',_,_,_,_,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1'
         f.write(_line + '\n')
     f.close()
-    output
+    return output
