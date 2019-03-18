@@ -5,6 +5,7 @@ from generator import AugmentedImageSequence
 from models.keras import ModelFactory
 from sklearn.metrics import roc_auc_score
 from utility import get_sample_counts
+from utility import create_csv
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -120,10 +121,13 @@ def predict_single(image_location):
     pass
 
 '''
-1. Predicts probability/binary vector for all images in the folder
-2. Outputs accuracy in the file
+1. create csv for this image_folder
+
 '''
-def predict_all(_test_file="test"):
+def predict_all(image_folder, _test_file='test'):
+    csv_file_name = _test_file + '.csv'
+    csv_file_path = os.path.join(output_dir, csv_file_name)
+    create_csv(image_folder, csv_file_path)
     # get test sample count
     test_counts, _ = get_sample_counts(output_dir, _test_file, class_names)
 
@@ -143,7 +147,7 @@ def predict_all(_test_file="test"):
     
     print("** load test generator **")
     test_sequence = AugmentedImageSequence(
-        dataset_csv_file=os.path.join(output_dir, _test_file + ".csv"),
+        dataset_csv_file=csv_file_path,
         class_names=class_names,
         source_image_dir=image_source_dir,
         batch_size=batch_size,
@@ -154,7 +158,7 @@ def predict_all(_test_file="test"):
     )
     print("** make prediction **")
     y_hat = model.predict_generator(test_sequence, verbose=1)
-    y = test_sequence.get_y_true()
+#    y = test_sequence.get_y_true()
     
     # print y_hat: (224, 7)
     print("** print predictions **")
