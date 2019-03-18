@@ -168,7 +168,7 @@ def predict_all(image_folder, _test_file='test', calculate_accuracy=False):
     test_log_path = os.path.join(output_dir, _test_file + ".pred")
     f = open(test_log_path, 'w')
     _header = 'image_path' + ','.join(class_names)
-    f.write(_header)
+    f.write(_header + '\n')
     for idx, item in enumerate(y_hat):  # cases
         image_name = images_list[idx]
         output_str = ''
