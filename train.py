@@ -2,6 +2,8 @@ import json
 import shutil
 import os
 import pickle
+import math
+
 from callback import MultipleClassAUROC, MultiGPUModelCheckpoint
 from configparser import ConfigParser
 from generator import AugmentedImageSequence
@@ -91,10 +93,10 @@ def main():
 
         # compute steps
         if train_steps == "auto":
-            train_steps = int(train_counts / batch_size)
+            train_steps = math.ceil(train_counts / batch_size)
         else:
             try:
-                train_steps = int(train_steps)
+                train_steps = math.ceil(train_steps)
             except ValueError:
                 raise ValueError("""
                 train_steps: {train_steps} is invalid,
@@ -103,10 +105,10 @@ def main():
         print("** train_steps: {train_steps} **")
 
         if validation_steps == "auto":
-            validation_steps = int(dev_counts / batch_size)
+            validation_steps = math.ceil(dev_counts / batch_size)
         else:
             try:
-                validation_steps = int(validation_steps)
+                validation_steps = math.ceil(validation_steps)
             except ValueError:
                 raise ValueError("""
                 validation_steps: {validation_steps} is invalid,
