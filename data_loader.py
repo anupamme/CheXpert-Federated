@@ -86,7 +86,7 @@ def replace_label(item):
         else:
             return _fitem
         
-def filter_labels(labels: list, allowed_indices=[2,6,8,9,10,12]):
+def filter_labels(labels: list, allowed_indices=[0,2,6,8,9,10,12]):
     _val = []
     for idx, value in enumerate(labels):
         if idx in allowed_indices:

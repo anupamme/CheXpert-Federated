@@ -1,7 +1,7 @@
 import cv2
 
-WIDTH = 4
-HEIGHT = 4
+WIDTH = 224
+HEIGHT = 224
 
 def convert_image(image_path):
     img = cv2.imread(image_path)
