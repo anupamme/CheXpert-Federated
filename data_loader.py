@@ -105,7 +105,7 @@ def load_data_sub(_file, image_dir):
     csv_data = csv.read_csv(_file)
     csv_to_use = csv_data[1:]
     for idx, parts in enumerate(csv_to_use):
-        if idx == 1000:
+        if idx == 1:
             break
         image, label_vec = process_line(parts, image_dir)
         x_data.append(image)

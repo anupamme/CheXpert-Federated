@@ -141,7 +141,9 @@ def main():
             model_name=base_model_name,
             use_base_weights=use_base_model_weights,
             weights_path=model_weights_file,
-            input_shape=(image_dimension, image_dimension, 3))
+            input_shape=(image_dimension, image_dimension, 3)
+#            input_shape=(image_dimension * image_dimension * 3,)
+        )
 
         if show_model_summary:
             print(model.summary())
@@ -152,7 +154,8 @@ def main():
             class_names=class_names,
             source_image_dir=image_source_dir,
             batch_size=batch_size,
-            target_size=(image_dimension, image_dimension),
+#            target_size=(image_dimension, image_dimension),
+            target_size=(image_dimension * image_dimension * 3,),
             augmenter=augmenter,
             steps=train_steps,
         )
@@ -161,7 +164,8 @@ def main():
             class_names=class_names,
             source_image_dir=image_source_dir,
             batch_size=batch_size,
-            target_size=(image_dimension, image_dimension),
+#            target_size=(image_dimension, image_dimension),
+            target_size=(image_dimension * image_dimension * 3,),
             augmenter=augmenter,
             steps=validation_steps,
             shuffle_on_epoch_end=False,
