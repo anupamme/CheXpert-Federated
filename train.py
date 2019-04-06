@@ -149,15 +149,13 @@ def main():
             print(model.summary())
 
         print("** create image generators **")
-        import pdb
-        pdb.set_trace()
         train_sequence = AugmentedImageSequence(
             dataset_csv_file=os.path.join(output_dir, "train.csv"),
             class_names=class_names,
             source_image_dir=image_source_dir,
             batch_size=batch_size,
-#            target_size=(image_dimension, image_dimension),
-            target_size=(image_dimension * image_dimension * 3,),
+            target_size=(image_dimension, image_dimension),
+#            target_size=(image_dimension * image_dimension * 3,),
             augmenter=augmenter,
             steps=train_steps,
         )
@@ -166,8 +164,8 @@ def main():
             class_names=class_names,
             source_image_dir=image_source_dir,
             batch_size=batch_size,
-#            target_size=(image_dimension, image_dimension),
-            target_size=(image_dimension * image_dimension * 3,),
+            target_size=(image_dimension, image_dimension),
+#            target_size=(image_dimension * image_dimension * 3,),
             augmenter=augmenter,
             steps=validation_steps,
             shuffle_on_epoch_end=False,
