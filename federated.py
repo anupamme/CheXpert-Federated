@@ -87,6 +87,8 @@ def preprocess(dataset):
 #            ('x', tf.reshape(element['pixels'], [-1])),
 #            ('y', tf.reshape(element['labels'], [-1])),
 #        ])
+        import pdb
+        pdb.set_trace()
         _val = collections.OrderedDict([
             ('x', tf.reshape(element['pixels'], element['pixels'].shape)),
             ('y', tf.reshape(element['label'], element['label'].shape)),
@@ -127,14 +129,13 @@ def create_compiled_keras_model():
     model = tf.keras.models.Sequential([
         tf.keras.layers.Dense(
           10, 
-          activation=tf.nn.sigmoid, 
+          activation=tf.nn.softmax, 
           kernel_initializer='zeros', 
-#          input_shape=(48,)
           input_shape=(28,28)
         )])
     
     def loss_fn(y_true, y_pred):
-        return tf.reduce_mean(tf.keras.losses.binary_crossentropy(
+        return tf.reduce_mean(tf.keras.losses.sparse_categorical_crossentropy(
             y_true, y_pred))
     model.compile(
         loss=loss_fn,
@@ -143,6 +144,8 @@ def create_compiled_keras_model():
     return model
 
 def model_fn():
+    import pdb
+    pdb.set_trace()
     keras_model = create_compiled_keras_model()
     global sample_batch
     return tff.learning.from_compiled_keras_model(keras_model, sample_batch)
@@ -161,12 +164,12 @@ if __name__ == "__main__":
     client_data_train.client_ids[0])
     preprocessed_example_dataset = preprocess(example_dataset)
 #    preprocessed_example_dataset = example_dataset
+    import pdb
+    pdb.set_trace()
     global sample_batch
     sample_batch = nest.map_structure(
         lambda x: x.numpy(), iter(preprocessed_example_dataset).next())
     sample_clients = client_data_train.client_ids[0:num_clients]
-    import pdb
-    pdb.set_trace()
     federated_train_data = make_federated_data(client_data_train, sample_clients)
     iterative_process = tff.learning.build_federated_averaging_process(model_fn)
     state = iterative_process.initialize()

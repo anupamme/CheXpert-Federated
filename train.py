@@ -149,6 +149,8 @@ def main():
             print(model.summary())
 
         print("** create image generators **")
+        import pdb
+        pdb.set_trace()
         train_sequence = AugmentedImageSequence(
             dataset_csv_file=os.path.join(output_dir, "train.csv"),
             class_names=class_names,

@@ -4,7 +4,8 @@ import pandas as pd
 from keras.utils import Sequence
 from PIL import Image
 from skimage.transform import resize
-
+import tensorflow as tf
+import functools
 
 class AugmentedImageSequence(Sequence):
     """
@@ -59,6 +60,8 @@ class AugmentedImageSequence(Sequence):
         image_array = np.asarray(image.convert("RGB"))
         image_array = image_array / 255.
         image_array = resize(image_array, self.target_size)
+        flat_len = functools.reduce(lambda x,y: x*y, list(image_array.shape))
+        image_array = tf.reshape(tf.convert_to_tensor(image_array), flat_len)
         return image_array
 
     def transform_batch_images(self, batch_x):
