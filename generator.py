@@ -60,9 +60,11 @@ class AugmentedImageSequence(Sequence):
         image_array = np.asarray(image.convert("RGB"))
         image_array = image_array / 255.
         image_array = resize(image_array, self.target_size)
-        flat_len = functools.reduce(lambda x,y: x*y, list(image_array.shape))
-        image_array = tf.reshape(tf.convert_to_tensor(image_array), flat_len)
-        return image_array
+        #_tensor = tf.convert_to_tensor(image_array)
+        print('image_array_shape before:' + str(image_array.shape))
+        image_tensor = tf.reshape(image_array, [-1])
+        print('image_array_shape after:' + str(image_tensor.shape))
+        return image_tensor
 
     def transform_batch_images(self, batch_x):
         if self.augmenter is not None:
