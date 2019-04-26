@@ -62,8 +62,8 @@ def load_data():
         _file_path = os.path.join(csv_dir, _file_name)
         _x, _y = dl.load_data_file(_file_path, image_source_dir)
         _client_map = {}
-        _client_map['y'] = _y
-        _client_map['x'] = _x
+        _client_map['label'] = _y
+        _client_map['pixels'] = _x
         output[client_item] = _client_map
     return output
 
@@ -83,12 +83,10 @@ def create_fake_hdf5(arg_data):
 def preprocess(dataset):
 
     def element_fn(element):
-#         _val = collections.OrderedDict([
+#        _val = collections.OrderedDict([
 #            ('x', tf.reshape(element['pixels'], [-1])),
-#            ('y', tf.reshape(element['labels'], [-1])),
+#            ('y', tf.reshape(element['label'], [-1])),
 #        ])
-        import pdb
-        pdb.set_trace()
         _val = collections.OrderedDict([
             ('x', tf.reshape(element['pixels'], element['pixels'].shape)),
             ('y', tf.reshape(element['label'], element['label'].shape)),
@@ -103,49 +101,47 @@ def make_federated_data(client_data, client_ids):
     return [preprocess(client_data.create_tf_dataset_for_client(x))
             for x in client_ids]
 
-#def create_compiled_keras_model():
-#    model = tf.keras.applications.densenet.DenseNet121(include_top=True, input_tensor=None, input_shape=None, pooling="avg", weights=model_weights_path, classes=7)
-##    optimizer = Adam(lr=initial_learning_rate)
-#    optimizer = gradient_descent.SGD(learning_rate=0.02)
-#    def loss_fn(y_true, y_pred):
-#        return tf.reduce_mean(tf.keras.losses.binary_crossentropy(
-#            y_true, y_pred))
-#    
-#    def metric_fn(y_true, y_pred):
-#        return tf.keras.metrics.binary_crossentropy(
-#            y_true,
-#            y_pred
-#        )
-#    
-#    model.compile(
-#        loss = loss_fn,
-#        optimizer=optimizer,
-#        metrics=['accuracy']
-##        metrics=[metric_fn]
-#    )
-#    return model
-  
 def create_compiled_keras_model():
-    model = tf.keras.models.Sequential([
-        tf.keras.layers.Dense(
-          10, 
-          activation=tf.nn.softmax, 
-          kernel_initializer='zeros', 
-          input_shape=(28,28)
-        )])
-    
+    model = tf.keras.applications.densenet.DenseNet121(include_top=True, input_tensor=None, input_shape=None, pooling="avg", weights=model_weights_path, classes=7)
+#    optimizer = Adam(lr=initial_learning_rate)
+    optimizer = gradient_descent.SGD(learning_rate=0.02)
     def loss_fn(y_true, y_pred):
-        return tf.reduce_mean(tf.keras.losses.sparse_categorical_crossentropy(
+        return tf.reduce_mean(tf.keras.losses.binary_crossentropy(
             y_true, y_pred))
+    
+    def metric_fn(y_true, y_pred):
+        return tf.keras.metrics.binary_crossentropy(
+            y_true,
+            y_pred
+        )
+    
     model.compile(
-        loss=loss_fn,
-        optimizer=gradient_descent.SGD(learning_rate=0.02),
-        metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
+        loss = loss_fn,
+        optimizer=optimizer,
+        metrics=['accuracy']
+#        metrics=[metric_fn]
+    )
     return model
+  
+#def create_compiled_keras_model():
+#    model = tf.keras.models.Sequential([
+#        tf.keras.layers.Dense(
+#          10, 
+#          activation=tf.nn.softmax, 
+#          kernel_initializer='zeros', 
+#          input_shape=(28,28,)
+#        )])
+#    
+#    def loss_fn(y_true, y_pred):
+#        return tf.reduce_mean(tf.keras.losses.sparse_categorical_crossentropy(
+#            y_true, y_pred))
+#    model.compile(
+#        loss=loss_fn,
+#        optimizer=gradient_descent.SGD(learning_rate=0.02),
+#        metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
+#    return model
 
 def model_fn():
-    import pdb
-    pdb.set_trace()
     keras_model = create_compiled_keras_model()
     global sample_batch
     return tff.learning.from_compiled_keras_model(keras_model, sample_batch)
@@ -158,14 +154,14 @@ def model_fn():
 if __name__ == "__main__":
     nest = tf.contrib.framework.nest
     tf.compat.v1.enable_v2_behavior()
-    #client_data_train = hdf5_client_data.HDF5ClientData(create_fake_hdf5(load_data()))
-    client_data_train, client_data_test = tff.simulation.datasets.emnist.load_data()
+    client_data_train = hdf5_client_data.HDF5ClientData(create_fake_hdf5(load_data()))
+    #client_data_train, client_data_test = tff.simulation.datasets.emnist.load_data()
+    import pdb
+    pdb.set_trace()
     example_dataset = client_data_train.create_tf_dataset_for_client(
     client_data_train.client_ids[0])
     preprocessed_example_dataset = preprocess(example_dataset)
 #    preprocessed_example_dataset = example_dataset
-    import pdb
-    pdb.set_trace()
     global sample_batch
     sample_batch = nest.map_structure(
         lambda x: x.numpy(), iter(preprocessed_example_dataset).next())
@@ -176,6 +172,4 @@ if __name__ == "__main__":
     for round_num in range(2, 11):
         state, metrics = iterative_process.next(state, federated_train_data)
         print('round {:2d}, metrics={}'.format(round_num, metrics))
-    import pdb
-    pdb.set_trace()
     print('done!')

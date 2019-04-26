@@ -50,7 +50,7 @@ class AugmentedImageSequence(Sequence):
     def __getitem__(self, idx):
         batch_x_path = self.x_path[idx * self.batch_size:(idx + 1) * self.batch_size]
         batch_x = np.asarray([self.load_image(x_path) for x_path in batch_x_path])
-        batch_x = self.transform_batch_images(batch_x)
+#        batch_x = self.transform_batch_images(batch_x)
         batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]
         return batch_x, batch_y
 

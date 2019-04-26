@@ -156,7 +156,8 @@ def main():
             batch_size=batch_size,
             target_size=(image_dimension, image_dimension),
 #            target_size=(image_dimension * image_dimension * 3,),
-            augmenter=augmenter,
+#            augmenter=augmenter,
+            augmenter=None,
             steps=train_steps,
         )
         validation_sequence = AugmentedImageSequence(
@@ -166,7 +167,8 @@ def main():
             batch_size=batch_size,
             target_size=(image_dimension, image_dimension),
 #            target_size=(image_dimension * image_dimension * 3,),
-            augmenter=augmenter,
+#            augmenter=augmenter,
+            augmenter=None,
             steps=validation_steps,
             shuffle_on_epoch_end=False,
         )
