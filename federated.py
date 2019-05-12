@@ -21,6 +21,7 @@ import tempfile
 import h5py
 import six
 
+
 from configparser import ConfigParser
 import data_loader as dl
 '''
@@ -155,9 +156,7 @@ if __name__ == "__main__":
     nest = tf.contrib.framework.nest
     tf.compat.v1.enable_v2_behavior()
     client_data_train = hdf5_client_data.HDF5ClientData(create_fake_hdf5(load_data()))
-    #client_data_train, client_data_test = tff.simulation.datasets.emnist.load_data()
-    import pdb
-    pdb.set_trace()
+#    client_data_train, client_data_test = tff.simulation.datasets.emnist.load_data()
     example_dataset = client_data_train.create_tf_dataset_for_client(
     client_data_train.client_ids[0])
     preprocessed_example_dataset = preprocess(example_dataset)
