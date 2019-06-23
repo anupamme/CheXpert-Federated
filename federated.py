@@ -24,6 +24,8 @@ import six
 
 from configparser import ConfigParser
 import data_loader as dl
+default = True
+
 '''
 1. Put the images in data/images
 2. Put the ground truth csv files like this: 
@@ -84,14 +86,16 @@ def create_fake_hdf5(arg_data):
 def preprocess(dataset):
 
     def element_fn(element):
-#        _val = collections.OrderedDict([
-#            ('x', tf.reshape(element['pixels'], [-1])),
-#            ('y', tf.reshape(element['label'], [-1])),
-#        ])
-        _val = collections.OrderedDict([
-            ('x', tf.reshape(element['pixels'], element['pixels'].shape)),
-            ('y', tf.reshape(element['label'], element['label'].shape)),
-        ])
+        if default:
+            _val = collections.OrderedDict([
+                ('x', tf.reshape(element['pixels'], [-1])),
+                ('y', tf.reshape(element['label'], [-1])),
+            ])
+        else:
+            _val = collections.OrderedDict([
+                ('x', tf.reshape(element['pixels'], element['pixels'].shape)),
+                ('y', tf.reshape(element['label'], element['label'].shape)),
+            ])
         return _val
 
     return dataset.repeat(epochs).map(element_fn).shuffle(
@@ -124,26 +128,29 @@ def create_compiled_keras_model():
     )
     return model
   
-#def create_compiled_keras_model():
-#    model = tf.keras.models.Sequential([
-#        tf.keras.layers.Dense(
-#          10, 
-#          activation=tf.nn.softmax, 
-#          kernel_initializer='zeros', 
-#          input_shape=(28,28,)
-#        )])
-#    
-#    def loss_fn(y_true, y_pred):
-#        return tf.reduce_mean(tf.keras.losses.sparse_categorical_crossentropy(
-#            y_true, y_pred))
-#    model.compile(
-#        loss=loss_fn,
-#        optimizer=gradient_descent.SGD(learning_rate=0.02),
-#        metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
-#    return model
+def create_compiled_keras_model_default():
+    model = tf.keras.models.Sequential([
+        tf.keras.layers.Dense(
+          10, 
+          activation=tf.nn.softmax, 
+          kernel_initializer='zeros', 
+          input_shape=(28,28,)
+        )])
+    
+    def loss_fn(y_true, y_pred):
+        return tf.reduce_mean(tf.keras.losses.sparse_categorical_crossentropy(
+            y_true, y_pred))
+    model.compile(
+        loss=loss_fn,
+        optimizer=gradient_descent.SGD(learning_rate=0.02),
+        metrics=[tf.keras.metrics.SparseCategoricalAccuracy()])
+    return model
 
 def model_fn():
-    keras_model = create_compiled_keras_model()
+    if default:
+        keras_model = create_compiled_keras_model_default()
+    else:
+        keras_model = create_compiled_keras_model()
     global sample_batch
     return tff.learning.from_compiled_keras_model(keras_model, sample_batch)
 
@@ -155,8 +162,10 @@ def model_fn():
 if __name__ == "__main__":
     nest = tf.contrib.framework.nest
     tf.compat.v1.enable_v2_behavior()
-    client_data_train = hdf5_client_data.HDF5ClientData(create_fake_hdf5(load_data()))
-#    client_data_train, client_data_test = tff.simulation.datasets.emnist.load_data()
+    if default:
+        client_data_train, client_data_test = tff.simulation.datasets.emnist.load_data()
+    else:
+        client_data_train = hdf5_client_data.HDF5ClientData(create_fake_hdf5(load_data()))
     example_dataset = client_data_train.create_tf_dataset_for_client(
     client_data_train.client_ids[0])
     preprocessed_example_dataset = preprocess(example_dataset)
