@@ -13,7 +13,7 @@ from six.moves import range
 import numpy as np
 import tensorflow as tf
 from tensorflow.python.keras.optimizer_v2 import gradient_descent
-from tensorflow_federated import python as tff
+import tensorflow_federated as tff
 from tensorflow_federated.python.simulation import hdf5_client_data
 from tensorflow.keras.optimizers import Adam
 import os

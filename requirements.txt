@@ -9,3 +9,4 @@ scikit-image
 imgaug==0.2.5
 opencv-python==3.4.2.17
 h5py==2.7.1
+tensorflow-federated
