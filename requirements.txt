@@ -3,11 +3,11 @@ numpy
 pandas
 scikit-learn
 scipy
-tensorflow
-tensorflow-gpu==1.13.1
+tensorflow==1.14.0
+tensorflow-gpu==1.14.0
 Pillow==5.0.0
 scikit-image
 imgaug==0.2.5
 opencv-python==3.4.2.17
 h5py==2.7.1
-tensorflow-federated
+tensorflow-federated==0.7.0
