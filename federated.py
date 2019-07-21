@@ -123,7 +123,8 @@ def create_compiled_keras_model():
     model.compile(
         loss = loss_fn,
         optimizer=optimizer,
-        metrics=['accuracy']
+        metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]
+#        metrics=['accuracy']
 #        metrics=[metric_fn]
     )
     return model
