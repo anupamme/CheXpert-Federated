@@ -20,7 +20,7 @@ from configparser import ConfigParser
 import data_loader as dl
 
 
-# In[2]:
+# In[10]:
 
 
 '''
@@ -101,7 +101,6 @@ sample_batch = nest.map_structure(
     lambda x: x.numpy(), iter(preprocessed_example_dataset).next()
 )
 
-len(sample_batch['y'][0]), sample_batch['y']
 
 def make_federated_data(client_data, client_ids):
     return [preprocess(client_data.create_tf_dataset_for_client(x))
@@ -110,15 +109,6 @@ def make_federated_data(client_data, client_ids):
 sample_clients = client_data_train.client_ids[0:num_clients]
 federated_train_data = make_federated_data(client_data_train, sample_clients)
 
-class MyBinaryCrossentropy(tf.keras.metrics.BinaryCrossentropy):
-    def __init__(self, from_logits=False, label_smoothing=0, name='accuracy', dtype=None):
-        super(MyBinaryCrossentropy, self).__init__(name, dtype=dtype)
-
-    def update_state(self, y_true, y_pred, sample_weight=None):
-        return super(MyBinaryCrossentropy, self).update_state(
-            y_true,
-            y_pred
-        )
 
 def loss_fn(y_true, y_pred):
     return tf.reduce_mean(tf.keras.losses.binary_crossentropy(
@@ -129,10 +119,11 @@ def create_compiled_keras_model():
 #    optimizer = Adam(lr=initial_learning_rate)
     optimizer = gradient_descent.SGD(learning_rate=0.02)
     model.compile(
-        loss = loss_fn,
+        loss = ['binary_crossentropy'],
         optimizer=optimizer,
 #        metrics=[MyBinaryCrossentropy()]
-        metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]
+#        metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]
+        metrics=[tf.keras.metrics.MeanSquaredError()]
     )
     return model
 
@@ -141,7 +132,10 @@ def model_fn():
     return tff.learning.from_compiled_keras_model(keras_model, sample_batch)
 
 iterative_process = tff.learning.build_federated_averaging_process(model_fn)
+print('done build_federated_averaging_process!')
 state = iterative_process.initialize()
 for round_num in range(1, 11):
     state, metrics = iterative_process.next(state, federated_train_data)
     print('round {:2d}, metrics={}'.format(round_num, metrics))
+
+print('done training!')
