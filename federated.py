@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[9]:
 
 
 #@test {"output": "ignore"}
@@ -25,7 +25,7 @@ from configparser import ConfigParser
 import data_loader as dl
 
 
-# In[2]:
+# In[10]:
 
 
 '''
@@ -59,7 +59,7 @@ num_clients = cp["FEDERATED"].getint("number_clients")
 output_dir, class_names, base_model_name, image_source_dir, csv_dir, batch_size, epochs, output_weights_name, model_weights_path, initial_learning_rate, client_list, shuffle_buffer, num_clients
 
 
-# In[3]:
+# In[11]:
 
 
 np.random.seed(0)
@@ -68,7 +68,7 @@ nest = tf.contrib.framework.nest
 tf.compat.v1.enable_v2_behavior()
 
 
-# In[4]:
+# In[12]:
 
 
 def load_data():
@@ -106,7 +106,7 @@ def preprocess(dataset):
         shuffle_buffer).batch(batch_size)
 
 
-# In[5]:
+# In[13]:
 
 
 client_data_train = hdf5_client_data.HDF5ClientData( create_fake_hdf5(load_data()) )
@@ -119,13 +119,15 @@ sample_batch = nest.map_structure(
 )
 
 
-# In[6]:
+# In[14]:
 
 
-len(sample_batch['y'][0]), sample_batch['y']
+## ?? Why does sample_batch['y'] have shape 2, 7 (and not 1, 7)
+
+sample_batch['y'].shape, sample_batch['y'], len(sample_batch)
 
 
-# In[7]:
+# In[15]:
 
 
 def make_federated_data(client_data, client_ids):
@@ -136,18 +138,8 @@ sample_clients = client_data_train.client_ids[0:num_clients]
 federated_train_data = make_federated_data(client_data_train, sample_clients)
 
 
-# In[ ]:
+# In[17]:
 
-
-class MyBinaryCrossentropy(tf.keras.metrics.BinaryCrossentropy):
-     def __init__(self, from_logits=False, label_smoothing=0, name='accuracy', dtype=None):
-           super(MyBinaryCrossentropy, self).__init__(name, dtype=dtype)
-
-     def update_state(self, y_true, y_pred, sample_weight=None):
-           return super(MyBinaryCrossentropy, self).update_state(
-                   y_true,
-                   y_pred
-               )
 
 def loss_fn(y_true, y_pred):
     return tf.reduce_mean(tf.keras.losses.binary_crossentropy(
@@ -159,9 +151,9 @@ def create_compiled_keras_model():
     optimizer = gradient_descent.SGD(learning_rate=0.02)
     
     model.compile(
-        loss = loss_fn,
+        loss = ['binary_crossentropy'],
         optimizer=optimizer,
-        metrics=[MyBinaryCrossentropy()]
+        metrics=[tf.keras.metrics.MeanSquaredError()]
     )
     return model
 
@@ -169,19 +161,16 @@ def model_fn():
     keras_model = create_compiled_keras_model()
     return tff.learning.from_compiled_keras_model(keras_model, sample_batch)
 
-
-# In[ ]:
-
-
 iterative_process = tff.learning.build_federated_averaging_process(model_fn)
 
-print("done")
+print('done build_federated_averaging_process!')
 
 state = iterative_process.initialize()
 for round_num in range(1, 11):
     state, metrics = iterative_process.next(state, federated_train_data)
     print('round {:2d}, metrics={}'.format(round_num, metrics))
-print('done!')
+
+print('done training!')
 # In[ ]:
 
 
