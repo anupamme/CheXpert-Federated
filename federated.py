@@ -122,8 +122,8 @@ def create_compiled_keras_model():
         loss = ['binary_crossentropy'],
         optimizer=optimizer,
 #        metrics=[MyBinaryCrossentropy()]
-#        metrics=[tf.keras.metrics.SparseCategoricalAccuracy()]
-        metrics=[tf.keras.metrics.MeanSquaredError()]
+        metrics=[tf.keras.metrics.BinaryAccuracy()]
+#        metrics=[tf.keras.metrics.MeanSquaredError()]
     )
     return model
 

@@ -3,8 +3,7 @@ numpy
 pandas
 scikit-learn
 scipy
-tensorflow==1.14.0
-tensorflow-gpu==1.14.0
+tf-nightly
 Pillow==5.0.0
 scikit-image
 imgaug==0.2.5
