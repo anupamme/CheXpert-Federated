@@ -127,7 +127,7 @@ def model_fn():
     keras_model = create_compiled_keras_model()
     return tff.learning.from_compiled_keras_model(keras_model, sample_batch)
 
-tff.framework.set_default_executor(tff.framework.create_local_executor())
+tff.framework.set_default_executor(tff.framework.create_local_executor(num_clients))
 iterative_process = tff.learning.build_federated_averaging_process(model_fn)
 print('done build_federated_averaging_process!')
 state = iterative_process.initialize()
